@@ -1,6 +1,6 @@
 // Boilerplate for a Processing Sketch
 
-float wave_speed = 10;
+float wave_speed = 20;
 float color_scale = 1;
 float friction = 0.1;
 
@@ -41,12 +41,15 @@ void setup() {
 void draw() {
   // get dt
   int now = millis();
-  dt = (last_millis-now)/1000;
+  dt = (now-last_millis)/1000.0;
+  
+  println(frameRate);
+  
   last_millis = now;
   
   // main update loop
-  float[][] secondX = partialX(partialX(field));
-  float[][] secondY = partialY(partialY(field));
+  float[][] secondX = partialX(field);
+  float[][] secondY = partialY(field);
   
   float dv;
   for (int i = 0; i < sim_width; i++) {
@@ -65,9 +68,7 @@ void draw() {
   
   inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 400);
   
-  source(field, (sim_width-1)/2, 0, 50, 30);
-  
-  println(frameRate, lastMillis, field[(sim_width-1)/2][20]);
+  source(field, (sim_width-1)/2, 0, 50, 10);
 }
 
 float rescaleColor(float input) {
@@ -92,41 +93,44 @@ void drawField() {
   updatePixels();
 }
 
+
+// computes the 2nd order central differences
 float[][] partialX(float[][] field) {
   float[][] partial = new float[sim_width][sim_height];
   
   // calculate middle partials
   for (int i = 1; i < sim_width-1; i++) {
     for (int j = 0; j < sim_height; j++) {
-      partial[i][j] = field[i+1][j]-field[i-1][j];
+      partial[i][j] = field[i+1][j]+field[i-1][j]-2*field[i][j];
     }
   }
   
   // do edge case
   // boundary conditions are that off screen is held 0
   for (int j = 0; j < sim_height; j++) {
-    partial[0][j] = field[1][j]/2;
-    partial[sim_width-1][j] = -field[sim_width-2][j]/2;
+    partial[0][j] = field[1][j]-2*field[0][j];
+    partial[sim_width-1][j] = field[sim_width-2][j]-2*field[sim_width-1][j];
   }
   
   return partial;
 }
 
+// computes the 2nd order central differences
 float[][] partialY(float[][] field) {
   float[][] partial = new float[sim_width][sim_height];
   
   // calculate middle partials
   for (int i = 0; i < sim_width; i++) {
     for (int j = 1; j < sim_height-1; j++) {
-      partial[i][j] = field[i][j+1]-field[i][j-1];
+      partial[i][j] = field[i][j+1]+field[i][j-1]-2*field[i][j];
     }
   }
   
   // do edge case
   // boundary conditions are that off screen is held 0
   for (int i = 0; i < sim_width; i++) {
-    partial[i][0] = field[i][1]/2;
-    partial[i][sim_height-1] = -field[i][sim_height-2]/2;
+    partial[i][0] = field[i][1]-2*-2*field[i][0];
+    partial[i][sim_height-1] = field[i][sim_height-2]-2*field[i][sim_height-1];
   }
   
   return partial;
