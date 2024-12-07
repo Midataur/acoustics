@@ -49,39 +49,12 @@ void draw() {
     }
   }
   
-  // boundary conditions
-  
-  //field[(sim_width-1)/2][(sim_height-1)/2] = 50*sin(millis()/(TAU*100));
-  field[(sim_width-1)/2][0] = 50*sin(millis()/(TAU*100));
-  
-  for (int i = 0; i < sim_width; i++) {
-    for (int j = 0; j < sim_height; j++) {
-      float real_x = i-(sim_width-1)/2;
-      float real_y = j-(sim_height-1)/2;
-      
-      if (sqrt(pow(real_x, 2)+pow(real_y, 2)) > 400) {
-        field[i][j] = 0;
-      }
-    }
-  }
-  
-  for (int i = 0; i < sim_width; i++) {
-    for (int j = 0; j < sim_height; j++) {
-      float real_x = i-(sim_width-1)/2;
-      float real_y = j-(sim_height-1)/2;
-      
-      if (sqrt(pow(real_x, 2)+pow(real_y, 2)) < 100) {
-        field[i][j] = 0;
-      }
-    }
-  }
-  
   drawField();
-  // draw the boundary
-  noFill();
-  circle((width-1)/2, (height-1)/2, 400);
   
-  circle((width-1)/2, (height-1)/2, 100);
+  // boundary conditions
+  circularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 100);
+  inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 400);
+  source(field, (sim_width-1)/2, 0, 50, 10);
 }
 
 float rescaleColor(float input) {
