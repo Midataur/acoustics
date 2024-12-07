@@ -1,8 +1,11 @@
 // Boilerplate for a Processing Sketch
 
-float wave_speed = 30;
+float wave_speed = 10;
 float color_scale = 1;
 float friction = 0.1;
+
+float dt;
+int last_millis = 0;
 
 color red = color(255, 0, 0);
 color blue = color(0, 0, 255);
@@ -21,7 +24,7 @@ void setup() {
   background(255); // Set the background color (white in this case)
   
   // Additional setup code goes here (e.g., setting frame rate, loading assets)
-  frameRate(60); // Set the frame rate (frames per second)
+  frameRate(120); // Set the frame rate (frames per second)
   
   field = new float[sim_width][sim_height];
   velocity = new float[sim_width][sim_height];
@@ -36,6 +39,11 @@ void setup() {
 }
 
 void draw() {
+  // get dt
+  int now = millis();
+  dt = (last_millis-now)/1000;
+  last_millis = now;
+  
   // main update loop
   float[][] secondX = partialX(partialX(field));
   float[][] secondY = partialY(partialY(field));
@@ -44,17 +52,22 @@ void draw() {
   for (int i = 0; i < sim_width; i++) {
     for (int j = 0; j < sim_height; j++) {
       dv = pow(wave_speed, 2)*(secondX[i][j]+secondY[i][j]) - friction*velocity[i][j];
-      velocity[i][j] = velocity[i][j]+dv/frameRate;
-      field[i][j] = field[i][j]+velocity[i][j]/frameRate;
+      velocity[i][j] = velocity[i][j]+dv*dt;
+      field[i][j] = field[i][j]+velocity[i][j]*dt;
     }
   }
   
   drawField();
   
   // boundary conditions
-  circularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 100);
+  circularBoundary(field, (sim_width-1)/2-110, (sim_height-1)/2, 100);
+  circularBoundary(field, (sim_width-1)/2+110, (sim_height-1)/2, 100);
+  
   inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 400);
-  source(field, (sim_width-1)/2, 0, 50, 10);
+  
+  source(field, (sim_width-1)/2, 0, 50, 30);
+  
+  println(frameRate, lastMillis, field[(sim_width-1)/2][20]);
 }
 
 float rescaleColor(float input) {
