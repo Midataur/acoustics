@@ -10,10 +10,9 @@ void circularBoundary(float[][] field, int x, int y, int radius) {
     }
   }
   
-  
   // draw the boundary
   noFill();
-  circle(x/2, y/2, radius);
+  circle(x, y, radius);
 }
 
 void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
@@ -30,9 +29,9 @@ void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
   
   // draw the boundary
   noFill();
-  circle(x/2, y/2, radius);
+  circle(x, y, radius);
 }
 
 void source(float[][] field, int x, int y, float power, float freq) {
-  field[x][y] = power*sin((millis()*freq)/(TAU*1000));
+  field[x][y] = power*sin(((millis()-start)*freq*TAU)/1000);
 }

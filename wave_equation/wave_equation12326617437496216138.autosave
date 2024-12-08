@@ -1,14 +1,11 @@
 // Boilerplate for a Processing Sketch
 
-float wave_speed = 10;
+float wave_speed = 20;
 float color_scale = 1;
 float friction = 0.1;
 
 float dt;
-int last_millis;
-int start;
-
-int counter = 0;
+int last_millis = 0;
 
 color red = color(255, 0, 0);
 color blue = color(0, 0, 255);
@@ -20,14 +17,13 @@ float[][] velocity;
 int sim_width = 401;
 int sim_height = 401;
 
-
 void setup() {
   // Initialize your settings
   size(401, 401); // Set the size of the canvas (width, height)
   background(255); // Set the background color (white in this case)
   
   // Additional setup code goes here (e.g., setting frame rate, loading assets)
-  frameRate(240); // Set the frame rate (frames per second)
+  frameRate(120); // Set the frame rate (frames per second)
   
   field = new float[sim_width][sim_height];
   velocity = new float[sim_width][sim_height];
@@ -39,9 +35,6 @@ void setup() {
       velocity[i][j] = 0;
     }
   }
-  
-  last_millis = millis();
-  start = last_millis;
 }
 
 void draw() {
@@ -54,23 +47,16 @@ void draw() {
   float[][] secondX = partialX(field);
   float[][] secondY = partialY(field);
   
-  counter++;
-  //println("Frame:", counter);
-  
   float dv;
   for (int i = 0; i < sim_width; i++) {
     for (int j = 0; j < sim_height; j++) {
       dv = pow(wave_speed, 2)*(secondX[i][j]+secondY[i][j]) - friction*velocity[i][j];
       velocity[i][j] = velocity[i][j]+dv*dt;
       field[i][j] = field[i][j]+velocity[i][j]*dt;
-      
-      if (i == (sim_width-1)/2 && j == 0) {
-        //println("dv", dv);
-      }
     }
   }
   
-  drawField(field);
+  drawField();
   
   // boundary conditions
   circularBoundary(field, (sim_width-1)/2-110, (sim_height-1)/2, 100);
@@ -78,27 +64,16 @@ void draw() {
   
   inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 400);
   
-  source(field, (sim_width-1)/2, 0, 50, 1);
+  source(field, (sim_width-1)/2, 0, 50, 10);
   
-  //println("field", field[(sim_width-1)/2][1]);
-  //println("velocity", velocity[(sim_width-1)/2][1]);
-  //println("secondX", secondX[(sim_width-1)/2][1]);
-  //println("secondY", secondY[(sim_width-1)/2][1]);
-  //println("dt", dt);
-  //println("time", (millis()-start)*TAU/1000.0);
-  
-  println(frameRate, dt);
-  
-  if (counter == 10) {
-    //noLoop();
-  }
+  println(frameRate, field[200][10]);
 }
 
 float rescaleColor(float input) {
   return min(1, max(color_scale*input, -1));
 }
 
-void drawField(float[][] field) {
+void drawField() {
   loadPixels();
   
   // draw the new field
@@ -152,7 +127,7 @@ float[][] partialY(float[][] field) {
   // do edge case
   // boundary conditions are that off screen is held 0
   for (int i = 0; i < sim_width; i++) {
-    partial[i][0] = field[i][1]-2*field[i][0];
+    partial[i][0] = field[i][1]-2*-2*field[i][0];
     partial[i][sim_height-1] = field[i][sim_height-2]-2*field[i][sim_height-1];
   }
   
