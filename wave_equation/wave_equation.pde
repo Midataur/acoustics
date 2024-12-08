@@ -13,6 +13,8 @@ int start;
 int counter = 0;
 float max_courant = 0;
 
+int timeout = 20;
+
 color red = color(255, 0, 0);
 color blue = color(0, 0, 255);
 color white = color(255);
@@ -53,6 +55,21 @@ void draw() {
   dt = (now-last_millis)/1000.0;
   last_millis = now;
   
+  // the courant number is a measuare of numerical stability
+  // the lower the better (greater than 1 is unstable)
+  // it gets big if the framerate drops
+  float courant = wave_speed*dt;
+  if (courant > max_courant) {
+    max_courant = courant;
+  }
+  
+  println(frameRate, courant, max_courant);
+  
+  if (courant > 0.5) {
+    wave_speed = 0;
+    counter = 0;
+  }
+  
   // main update loop
   float[][] secondX = partialX(field);
   float[][] secondY = partialY(field);
@@ -80,20 +97,11 @@ void draw() {
   
   source(field, (sim_width-1)/2, 0, 50, 1);
   
-  // the courant number is a measuare of numerical stability
-  // the lower the better
-  // it gets big if the framerate drops
-  float courant = wave_speed*dt;
-  if (courant > max_courant) {
-    max_courant = courant;
-  }
-  println(frameRate, courant, max_courant);
-  
   // the sim becomes numerically unstable if the frame rate drops
   // the frame rate is always really low on start up for a second
   // therefore, we skip the first few frames to avoid this
   counter++;
-  if (counter == 20) {
+  if (counter == timeout) {
     wave_speed = real_wave_speed;
   }
 }
