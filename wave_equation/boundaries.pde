@@ -1,10 +1,7 @@
 void circularBoundary(float[][] field, int x, int y, int radius) {
   for (int i = 0; i < sim_width; i++) {
     for (int j = 0; j < sim_height; j++) {
-      float real_x = i-x;
-      float real_y = j-y;
-      
-      if (sqrt(pow(real_x, 2)+pow(real_y, 2)) < radius) {
+      if (sqrt(pow(i-x, 2)+pow(j-y, 2)) <= radius) {
         field[i][j] = 0;
       }
     }
@@ -12,16 +9,13 @@ void circularBoundary(float[][] field, int x, int y, int radius) {
   
   // draw the boundary
   noFill();
-  circle(x, y, radius);
+  circle(x, y, 2*radius);
 }
 
 void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
   for (int i = 0; i < sim_width; i++) {
     for (int j = 0; j < sim_height; j++) {
-      float real_x = i-x;
-      float real_y = j-y;
-      
-      if (sqrt(pow(real_x, 2)+pow(real_y, 2)) > radius) {
+      if (sqrt(pow(i-x, 2)+pow(j-y, 2)) >= radius) {
         field[i][j] = 0;
       }
     }
@@ -29,7 +23,7 @@ void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
   
   // draw the boundary
   noFill();
-  circle(x, y, radius);
+  circle(x, y, 2*radius);
 }
 
 void source(float[][] field, int x, int y, float power, float freq) {

@@ -1,14 +1,17 @@
 // Boilerplate for a Processing Sketch
 
-float wave_speed = 10;
+float real_wave_speed = 40;
 float color_scale = 1;
 float friction = 0.1;
+
+float wave_speed = 0;
 
 float dt;
 int last_millis;
 int start;
 
 int counter = 0;
+float max_courant = 0;
 
 color red = color(255, 0, 0);
 color blue = color(0, 0, 255);
@@ -27,7 +30,7 @@ void setup() {
   background(255); // Set the background color (white in this case)
   
   // Additional setup code goes here (e.g., setting frame rate, loading assets)
-  frameRate(240); // Set the frame rate (frames per second)
+  frameRate(480); // Set the frame rate (frames per second)
   
   field = new float[sim_width][sim_height];
   velocity = new float[sim_width][sim_height];
@@ -54,9 +57,6 @@ void draw() {
   float[][] secondX = partialX(field);
   float[][] secondY = partialY(field);
   
-  counter++;
-  //println("Frame:", counter);
-  
   float dv;
   for (int i = 0; i < sim_width; i++) {
     for (int j = 0; j < sim_height; j++) {
@@ -73,24 +73,28 @@ void draw() {
   drawField(field);
   
   // boundary conditions
-  circularBoundary(field, (sim_width-1)/2-110, (sim_height-1)/2, 100);
-  circularBoundary(field, (sim_width-1)/2+110, (sim_height-1)/2, 100);
+  circularBoundary(field, (sim_width-1)/2-110, (sim_height-1)/2, 50);
+  circularBoundary(field, (sim_width-1)/2+110, (sim_height-1)/2, 50);
   
-  inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 400);
+  inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 200);
   
   source(field, (sim_width-1)/2, 0, 50, 1);
   
-  //println("field", field[(sim_width-1)/2][1]);
-  //println("velocity", velocity[(sim_width-1)/2][1]);
-  //println("secondX", secondX[(sim_width-1)/2][1]);
-  //println("secondY", secondY[(sim_width-1)/2][1]);
-  //println("dt", dt);
-  //println("time", (millis()-start)*TAU/1000.0);
+  // the courant number is a measuare of numerical stability
+  // the lower the better
+  // it gets big if the framerate drops
+  float courant = wave_speed*dt;
+  if (courant > max_courant) {
+    max_courant = courant;
+  }
+  println(frameRate, courant, max_courant);
   
-  println(frameRate, dt);
-  
-  if (counter == 10) {
-    //noLoop();
+  // the sim becomes numerically unstable if the frame rate drops
+  // the frame rate is always really low on start up for a second
+  // therefore, we skip the first few frames to avoid this
+  counter++;
+  if (counter == 20) {
+    wave_speed = real_wave_speed;
   }
 }
 
