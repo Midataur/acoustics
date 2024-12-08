@@ -1,6 +1,6 @@
 // Boilerplate for a Processing Sketch
 
-float real_wave_speed = 40;
+float real_wave_speed = 120;
 float color_scale = 1;
 float friction = 0.1;
 
@@ -66,7 +66,7 @@ void draw() {
   println(frameRate, courant, max_courant);
   
   // makes the sim resilient by skipping a frame if courant is too high
-  if (courant > 0.5) {
+  if (courant > 0.4) {
     dt = 0;
   }
   
@@ -90,8 +90,8 @@ void draw() {
   drawField(field);
   
   // boundary conditions
-  circularBoundary(field, (sim_width-1)/2-110, (sim_height-1)/2, 50);
-  circularBoundary(field, (sim_width-1)/2+110, (sim_height-1)/2, 50);
+  circularBoundary(field, (sim_width-1)/2-50, (sim_height-1)/2, 70);
+  circularBoundary(field, (sim_width-1)/2+110, (sim_height-1)/2, 70);
   
   inverseCircularBoundary(field, (sim_width-1)/2, (sim_height-1)/2, 200);
   
