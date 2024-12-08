@@ -1,7 +1,7 @@
 // Boilerplate for a Processing Sketch
 
 float wave_speed = 60;
-float color_scale = 1;
+float color_scale = 0.6;
 float friction = 0.1;
 float courant_threshold = 0.3;
 
@@ -59,15 +59,16 @@ void draw() {
   }
   
   // makes the sim more resilient by pretending the framerate is higher than it is
-  float visual_wave_speed = wave_speed;
+  float time_dilation = 1;
   if (courant > courant_threshold) {
-    visual_wave_speed = courant_threshold/dt;
-    dt = courant_threshold/wave_speed;
+    float new_dt = courant_threshold/wave_speed;
+    time_dilation = dt/new_dt;
+    dt = new_dt;
   }
   
   global_time = global_time + dt;
   
-  println(frameRate, courant, max_courant, visual_wave_speed);
+  println(frameRate, courant, max_courant, time_dilation);
   
   // main update loop
   float[][] secondX = partialX(field);
@@ -90,11 +91,11 @@ void draw() {
   
   // boundary conditions
   circularBoundary(field, (width-1)/2-50, (height-1)/2-20, 70);
-  circularBoundary(field, (width-1)/2+110, (height-1)/2+20, 30);
+  squareBoundary(field, (width-1)/2+110, (height-1)/2+20, 30);
   
   inverseCircularBoundary(field, (width-1)/2, (height-1)/2, 200);
   
-  source(field, (width-1)/2, 0, 50, 1);
+  sinSource(field, (width-1)/2, 0, 50, 2);
 }
 
 float rescaleColor(float input) {
