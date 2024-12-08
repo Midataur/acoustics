@@ -1,6 +1,6 @@
 void circularBoundary(float[][] field, int x, int y, int radius) {
-  for (int i = 0; i < sim_width; i++) {
-    for (int j = 0; j < sim_height; j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       if (sqrt(pow(i-x, 2)+pow(j-y, 2)) <= radius) {
         field[i][j] = 0;
       }
@@ -13,8 +13,8 @@ void circularBoundary(float[][] field, int x, int y, int radius) {
 }
 
 void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
-  for (int i = 0; i < sim_width; i++) {
-    for (int j = 0; j < sim_height; j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       if (sqrt(pow(i-x, 2)+pow(j-y, 2)) >= radius) {
         field[i][j] = 0;
       }
