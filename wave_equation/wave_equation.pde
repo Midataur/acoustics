@@ -65,9 +65,9 @@ void draw() {
   
   println(frameRate, courant, max_courant);
   
+  // makes the sim resilient by skipping a frame if courant is too high
   if (courant > 0.5) {
-    wave_speed = 0;
-    counter = 0;
+    dt = 0;
   }
   
   // main update loop
