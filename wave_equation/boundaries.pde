@@ -27,5 +27,5 @@ void inverseCircularBoundary(float[][] field, int x, int y, int radius) {
 }
 
 void source(float[][] field, int x, int y, float power, float freq) {
-  field[x][y] = power*sin(((millis()-start)*freq*TAU)/1000);
+  field[x][y] = power*sin(global_time*freq*TAU);
 }

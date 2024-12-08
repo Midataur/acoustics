@@ -65,6 +65,8 @@ void draw() {
     dt = courant_threshold/wave_speed;
   }
   
+  global_time = global_time + dt;
+  
   println(frameRate, courant, max_courant, visual_wave_speed);
   
   // main update loop
