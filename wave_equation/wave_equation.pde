@@ -2,7 +2,7 @@
 
 float real_wave_speed = 120;
 float color_scale = 1;
-float friction = 0.1;
+float friction = 0.2;
 
 float wave_speed = 0;
 
@@ -65,9 +65,9 @@ void draw() {
   
   println(frameRate, courant, max_courant);
   
-  // makes the sim resilient by skipping a frame if courant is too high
-  if (courant > 0.4) {
-    dt = 0;
+  // makes the sim more resilient by pretending the framerate is higher than it is
+  if (courant > 0.3) {
+    dt = 0.3/wave_speed;
   }
   
   // main update loop
