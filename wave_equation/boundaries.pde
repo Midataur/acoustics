@@ -41,6 +41,22 @@ void squareBoundary(float[][] field, int x, int y, int radius) {
   square(x, y, radius);
 }
 
-void sinSource(float[][] field, int x, int y, float power, float freq) {
-  field[x][y] = power*sin(global_time*freq*TAU);
+void rotatedSquareBoundary(float[][] field, int x, int y, int radius) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
+      if (abs(i-x)+abs(j-y) == radius) {
+        field[i][j] = 0;
+      }
+    }
+  }
+  
+  // draw the boundary
+  noFill();
+  rectMode(RADIUS);
+  
+  pushMatrix();
+  translate(x, y);
+  rotate(PI/4);
+  square(0, 0, radius/sqrt(2));
+  popMatrix();
 }
